@@ -2,13 +2,15 @@
   "name": "sales-order-backend",
   "version": "1.0.0",
   "dependencies": {
-    "@sap/cds": "^9"
+    "@sap/cds": "^9",
+    "git-commit-msg-linter": "^5.0.8"
   },
   "devDependencies": {
     "@cap-js/sqlite": "^2"
   },
   "scripts": {
-    "start": "cds-serve"
+    "start": "cds-serve",
+    "dev": "cds watch"
   },
   "private": true
 }
