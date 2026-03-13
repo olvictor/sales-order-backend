@@ -1,6 +1,7 @@
-@id = 65792316-38e9-4399-8082-b477c62e0e23
+@id = e799f936-ddd6-4513-ab91-cd526261ca9b
 @customer_id = f1423e6e-0b7a-47d8-a669-5ac3c978732d
 
+@product_id = c4ac411b-cf20-495e-a0b0-6d6e965fb4a3
 GET http://localhost:4004/odata/v4/main/SalesOrderHeaders
 Content-Type: application/json
 
@@ -9,6 +10,28 @@ Content-Type: application/json
 
 POST http://localhost:4004/odata/v4/main/SalesOrderHeaders
 Content-Type: application/json
+
+    {
+      "id": "{{id}}",
+      "customer_id": "{{{{customer_id}}}}",
+      "totalAmount": 2000.00,
+      "items" : [
+        {
+            "id" : "f14f3107-9dfa-4e88-b31e-d1386317616b",
+            "header_id" : "{{id}}",
+            "product_id" : "{{product_id}}",
+            "quantity": 10,
+            "price" : 199.99
+        },
+        {
+            "id" : "96ec951e-de10-4c33-b9ca-bfe4d4b8d556",
+            "header_id" : "{{id}}",
+            "product_id" : "{{product_id}}",
+            "quantity": 5,
+            "price" : 199.99
+        }
+      ]
+    }
 
 ###
 
