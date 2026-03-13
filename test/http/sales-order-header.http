@@ -1,3 +1,6 @@
+@id = 65792316-38e9-4399-8082-b477c62e0e23
+@customer_id = f1423e6e-0b7a-47d8-a669-5ac3c978732d
+
 GET http://localhost:4004/odata/v4/main/SalesOrderHeaders
 Content-Type: application/json
 
@@ -9,6 +12,14 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:4004/odata/v4/main/SalesOrderHeaders(id=23193856-d029-4b3c-8d33-8c5874363ac6)
+DELETE http://localhost:4004/odata/v4/main/SalesOrderHeaders(id={{id}})
 Content-Type: application/json
 
+###
+
+PATCH http://localhost:4004/odata/v4/main/SalesOrderHeaders(id={{id}})
+Content-Type: application/json
+
+{
+    "totalAmount" : 100.00
+}

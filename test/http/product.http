@@ -1,0 +1,37 @@
+@url = localhost:4004/odata/v4/main/
+
+@id = c4ac411b-cf20-495e-a0b0-6d6e965fb4a3
+
+
+
+GET http://{{url}}Products
+Content-Type: application/json
+
+
+###
+
+POST http://{{url}}Products
+Content-Type: application/json
+
+{
+      "id": "{{id}}",
+      "name": "teclado",
+      "price": 199.99
+}
+
+###
+
+patch http://{{url}}Products(id={{id}})
+Content-Type: application/json
+
+{
+      "name": "Teclado logitech"
+}
+
+###
+
+delete http://{{url}}Products(id={{id}})
+Content-Type: application/json
+
+
+###
