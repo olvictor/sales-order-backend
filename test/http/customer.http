@@ -1,0 +1,38 @@
+@url = localhost:4004/odata/v4/main/
+
+@id = f1423e6e-0b7a-47d8-a669-5ac3c978732d
+
+
+
+GET http://{{url}}Customers
+Content-Type: application/json
+
+
+###
+
+POST http://{{url}}Customers
+Content-Type: application/json
+
+{
+      "id": "{{id}}",
+      "firstName": "Victor",
+      "lastName": "Oliveira",
+      "email": "aa@aa.com"
+}
+
+###
+
+patch http://{{url}}Customers(id={{id}})
+Content-Type: application/json
+
+{
+      "email": "teste@aa.com"
+}
+
+###
+
+delete http://{{url}}Customers(id={{id}})
+Content-Type: application/json
+
+
+###
