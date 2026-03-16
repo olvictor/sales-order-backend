@@ -83,3 +83,10 @@ Content-Type: application/json
 # Paginando os registros
 GET http://localhost:4004/odata/v4/main/SalesOrderHeaders?$skip=0&top=5
 Content-Type: application/json
+
+
+### 
+
+# Buscando dados com search
+GET http://localhost:4004/odata/v4/main/SalesOrderHeaders?$search=3x0kh&$filter=totalAmount gt 500
+Content-Type: application/json
