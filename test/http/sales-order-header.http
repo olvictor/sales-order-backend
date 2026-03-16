@@ -67,3 +67,19 @@ Content-Type: application/json
 # selecionar customer  e id do sales order
 GET http://localhost:4004/odata/v4/main/SalesOrderHeaders?$select=customer&$expand=customer($select=email)
 Content-Type: application/json
+
+
+
+### 
+
+# Descobrindo a qtd de registros
+GET http://localhost:4004/odata/v4/main/SalesOrderHeaders/$count
+Content-Type: application/json
+
+
+
+### 
+
+# Paginando os registros
+GET http://localhost:4004/odata/v4/main/SalesOrderHeaders?$skip=0&top=5
+Content-Type: application/json
