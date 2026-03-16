@@ -46,3 +46,17 @@ Content-Type: application/json
 {
     "totalAmount" : 100.00
 }
+
+### 
+
+# usando filter 
+GET http://localhost:4004/odata/v4/main/SalesOrderHeaders?$filter=totalAmount ge 9487808748179
+Content-Type: application/json
+
+
+
+### 
+
+# expandindo os items
+GET http://localhost:4004/odata/v4/main/SalesOrderHeaders?$expand=items($expand=product),customer
+Content-Type: application/json

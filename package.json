@@ -10,7 +10,8 @@
   },
   "scripts": {
     "start": "cds-serve",
-    "dev": "cds watch"
+    "dev": "cds watch",
+    "outrocommando": "kapoakas"
   },
   "private": true
 }
