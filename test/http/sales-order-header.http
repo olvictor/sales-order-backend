@@ -60,3 +60,10 @@ Content-Type: application/json
 # expandindo os items
 GET http://localhost:4004/odata/v4/main/SalesOrderHeaders?$expand=items($expand=product),customer
 Content-Type: application/json
+
+
+### 
+
+# selecionar customer  e id do sales order
+GET http://localhost:4004/odata/v4/main/SalesOrderHeaders?$select=customer&$expand=customer($select=email)
+Content-Type: application/json
