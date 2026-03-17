@@ -6,12 +6,13 @@
 
 GET http://{{url}}Customers
 Content-Type: application/json
-
+Authorization: Basic teste:123
 
 ###
 
 POST http://{{url}}Customers
 Content-Type: application/json
+Authorization: Basic admin:admin
 
 {
       "id": "{{id}}",

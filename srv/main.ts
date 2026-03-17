@@ -3,13 +3,20 @@ import { Customers, Product, Products, SalesOrderItem, SalesOrderItems } from "@
 import { SalesOrderHeaders } from "@models/sales"
 
 export default (service : Service) => {
-  service.after('READ',"Customers",(results: Customers) => {
-        results.forEach(Customer => {
-            if(!Customer.email?.includes('@')){
-                Customer.email = `${Customer.email}@gmail.com`
-            }
-        })
-  });
+   service.before('READ','*', (request: Request) =>{
+        if(!request.user.is('read_only_user')) return request.reject(403,'Não autorizado.')
+   })
+   service.before(['WRITE','DELETE'],'*', (request: Request) =>{
+        if(!request.user.is('admin')) return request.reject(403,'Não autorizada a escrita/deleção.')
+   });
+
+    service.after('READ',"Customers",(results: Customers) => {
+            results.forEach(Customer => {
+                if(!Customer.email?.includes('@')){
+                    Customer.email = `${Customer.email}@gmail.com`
+                }
+            })
+    });
 
 
    service.before('CREATE',"SalesOrderHeaders", async (request: Request) => {
