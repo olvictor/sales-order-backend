@@ -41,19 +41,19 @@ export default (service : Service) => {
         }
 
 
-        service.after('CREATE',SalesOrderHeaders, async (results: SalesOrderHeaders)=>{
+        service.after('CREATE','SalesOrderHeaders', async (results: SalesOrderHeaders)=>{
             const headerAsArray = Array.isArray(results) ? results : [results] as SalesOrderHeaders
 
-            for(const header of headerAsArray){
+              for(const header of headerAsArray){
                 const items = header.items as SalesOrderItems;
 
                 const productsData = items.map(item => ({
-                    id: item.product_id as string,
+                    id: item.product_id as String,
                     quantity: item.quantity as number
                 }))
 
-                const productsIds: string[] = productsData.map((productsData) => productsData.id)
-                const productsIdQuery = SELECT.from("sales.Produtcs").where( {id: productsId})
+                const productsIds: String[] = productsData.map((productData) => productData.id)
+                const productsIdQuery = SELECT.from('sales.Products').where( {id: productsIds})
 
                 const products:Products = await cds.run(productsIdQuery);
 
