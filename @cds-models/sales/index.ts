@@ -65,6 +65,7 @@ export function _ProductAspect<TBase extends new (...args: any[]) => object>(Bas
     declare id?: __.Key<string>
     declare name?: string | null
     declare price?: number | null
+    declare stock?: number | null
     static readonly kind: 'entity' | 'type' | 'aspect' = 'entity';
     declare static readonly keys: __.KeysOf<Product>;
     declare static readonly elements: __.ElementsOf<Product>;

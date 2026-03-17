@@ -16,7 +16,8 @@ Content-Type: application/json
 {
       "id": "{{id}}",
       "name": "teclado",
-      "price": 199.99
+      "price": 199.99,
+      "stock": 0
 }
 
 ###
