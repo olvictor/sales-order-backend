@@ -60,7 +60,7 @@ export default (service : Service) => {
                 for(const productData of productsData){
                     const foundProduct = products.find(product => product.id === product.id) as Product;
                     
-                    foundProduct.stock = (foundProduct.stock as number )- productData.quantity
+                    foundProduct.stock = (foundProduct.stock as number ) - productData.quantity
 
                     await cds.update("sales.Products").where({id: foundProduct.id}).with({stock: foundProduct.stock})
                 }
