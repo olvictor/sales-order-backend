@@ -47,8 +47,14 @@ export default (service : Service) => {
             if(dbProduct.stock === 0) return request.reject(400,`O ${dbProduct.name}(${dbProduct.id} - está sem estoque.)`)
         }
 
+        let totalAmout = 0;
 
-        service.after('CREATE','SalesOrderHeaders', async (results: SalesOrderHeaders)=>{
+        items.filter(item =>{
+            totalAmout += (item.price as number)  * (item.quantity as number)
+        })
+        request.data.totalAmout = totalAmout;
+     });   
+    service.after('CREATE','SalesOrderHeaders', async (results: SalesOrderHeaders)=>{
             const headerAsArray = Array.isArray(results) ? results : [results] as SalesOrderHeaders
 
               for(const header of headerAsArray){
@@ -73,8 +79,8 @@ export default (service : Service) => {
                 }
 
             }
-        })
-    });
+    })
+    
 }
 
 
