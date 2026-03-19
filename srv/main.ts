@@ -1,6 +1,8 @@
 import cds, { db, Request, Service } from "@sap/cds";
 import { Customers, Product, Products, SalesOrderItem, SalesOrderItems } from "@models/sales"
 import { SalesOrderHeaders } from "@models/sales"
+import { json } from "node:stream/consumers";
+import { customerController } from "./factories/controllers/customer";
 
 export default (service : Service) => {
    service.before('READ','*', (request: Request) =>{
@@ -10,12 +12,14 @@ export default (service : Service) => {
         if(!request.user.is('admin')) return request.reject(403,'Não autorizada a escrita/deleção.')
    });
 
-    service.after('READ',"Customers",(results: Customers) => {
-            results.forEach(Customer => {
-                if(!Customer.email?.includes('@')){
-                    Customer.email = `${Customer.email}@gmail.com`
-                }
-            })
+    service.after('READ',"Customers",(customersList: Customers, request) => {
+
+        request.results =  customerController.afterRead(customersList)
+        // results.forEach(Customer => {
+            //     if(!Customer.email?.includes('@')){
+            //         Customer.email = `${Customer.email}@gmail.com`
+            //     }
+            // })
     });
 
 
@@ -52,12 +56,23 @@ export default (service : Service) => {
         items.filter(item =>{
             totalAmout += (item.price as number)  * (item.quantity as number)
         })
+        
         request.data.totalAmout = totalAmout;
+
+
+        let desconto = totalAmout * (10/100);
+        if(totalAmout > 30000){
+            let desconto = totalAmout * (10/100);
+            totalAmout = totalAmout - desconto;
+        }
+
+          request.data.totalAmout = totalAmout;
      });   
-    service.after('CREATE','SalesOrderHeaders', async (results: SalesOrderHeaders)=>{
+    service.after('CREATE','SalesOrderHeaders', async (results: SalesOrderHeaders, request: Request)=>{
             const headerAsArray = Array.isArray(results) ? results : [results] as SalesOrderHeaders
 
               for(const header of headerAsArray){
+
                 const items = header.items as SalesOrderItems;
 
                 const productsData = items.map(item => ({
@@ -78,7 +93,17 @@ export default (service : Service) => {
                     await cds.update("sales.Products").where({id: foundProduct.id}).with({stock: foundProduct.stock})
                 }
 
+                const headerAsString =JSON.stringify(header)
+                const userAsString = JSON.stringify(request.user);
+                
+                const log = [{
+                    header_id: header.id,
+                    userData: userAsString,
+                    orderData: headerAsString
+                }]
+                await cds.create('sales.SalesOrderLogs').entries(log)
             }
+
     })
     
 }
