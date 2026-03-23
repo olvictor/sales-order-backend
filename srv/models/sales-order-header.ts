@@ -114,4 +114,11 @@ export class SalesOrderHeadersModel {
 
         return totalAmount;
     }
+
+    public getProductsData(): { id:string; quantity:number }[]{
+        return this.items.map(item => ({
+               id: item.productId,
+               quantity:item.quantity
+        }))
+    }
 } 
