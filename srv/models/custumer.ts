@@ -1,13 +1,16 @@
-type typeCustomer = {
+export type typeCustomer = {
     id: string,
     firstName: string,
     lastName: string,
     email: string
 }
+
+
+
 export class CustomerModel{
     constructor (private props: typeCustomer){}
 
-    public static create(props: typeCustomer ): CustomerModel{
+    public static with(props: typeCustomer ): CustomerModel{
         return new CustomerModel(props);
     }
 
