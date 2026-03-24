@@ -1,6 +1,7 @@
-import { SalesOrderHeader } from "@models/sales";
+import { SalesOrderHeader, SalesOrderHeaders } from "@models/sales";
 import { CreationPayloadValidationResult, SalesOrderHeaderController } from "./protocols";
 import { SalesOrderHeaderService } from "srv/services/sales-order-header/protocol";
+import { User } from "@sap/cds";
 
 export class SalesOrderHeaderControllerImpl implements SalesOrderHeaderController{
 
@@ -8,5 +9,9 @@ export class SalesOrderHeaderControllerImpl implements SalesOrderHeaderControlle
 
     public async beforeCreate(params: SalesOrderHeader): Promise<CreationPayloadValidationResult> {
         return this.service.beforeCreate(params);
+    }
+
+    public async afterCreate(params: SalesOrderHeaders,loggedUser: User): Promise<void> {
+        return this.service.afterCreate(params,loggedUser);
     }
 }   
