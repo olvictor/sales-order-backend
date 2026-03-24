@@ -1,5 +1,3 @@
-import { json } from "node:stream/consumers";
-
 type LoggedUserProps = {
     id:string,
     roles: string [],
@@ -24,10 +22,10 @@ export class LoggedUserModel {
     }
 
     public get roles(){
-        return this.props.roles
+        return this.props.roles;
     }
     public get attributes(){
-        return this.props.attributes
+        return this.props.attributes;
     }
 
     public toStringfiedObject(): string{

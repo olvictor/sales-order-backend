@@ -19,31 +19,31 @@ export class ProductModel {
     }
 
     public get id(){
-        return this.props.id
+        return this.props.id;
     }
     public get name(){
-        return this.props.name
+        return this.props.name;
     }
     public get price(){
-        return this.props.price
+        return this.props.price;
     }
     public get stock(){
-        return this.props.stock
+        return this.props.stock;
     }
 
     public set stock(stock:number){
-        this.props.stock = stock
+        this.props.stock = stock;
     }
     public sell(amount:number): SellValidationResult{
         if(this.stock < amount ){
-           return {
+            return {
                 hasError: true,
                 error: new Error('Quantidade insuficiente no stock.')
-           }
+            };
         }
         this.stock -= amount;
         return {
             hasError: false
-        }
+        };
     }
 }

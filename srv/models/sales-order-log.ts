@@ -18,23 +18,23 @@ export class SalesOrderLogModel{
         return new SalesOrderLogModel({
             ...props,
             id: crypto.randomUUID()            
-        })
+        });
     }   
 
     public get id(){
-        return this.props.id
+        return this.props.id;
     }
     
     public get headerId(){
-        return this.props.headerId
+        return this.props.headerId;
     }
     
     public get userData(){
-        return this.props.userData
+        return this.props.userData;
     }
 
     public get orderData(){
-        return this.props.orderData
+        return this.props.orderData;
     }
     
 
@@ -44,7 +44,7 @@ export class SalesOrderLogModel{
             header_id: this.headerId,
             userData: this.userData,
             orderData: this.orderData
-        }
+        };
     }
     
 }
