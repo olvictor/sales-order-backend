@@ -1,7 +1,9 @@
 /* eslint-disable max-lines-per-function */
+import '../configs/module-alias';
+
 import { SalesOrderHeaders } from '@models/sales';
-import { customerController } from './factories/controllers/customer';
-import { salesOrderHeaderController } from './factories/controllers/sales-order-header';
+import { customerController } from '../factories/controllers/customer';
+import { salesOrderHeaderController } from '../factories/controllers/sales-order-header';
 import { Customers, Product, Products, SalesOrderItems } from '@models/sales';
 import cds, { Request, Service } from '@sap/cds';
 

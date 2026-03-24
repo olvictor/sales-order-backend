@@ -4,7 +4,8 @@
   "dependencies": {
     "@sap/cds": "^9",
     "axios": "^1.13.6",
-    "git-commit-msg-linter": "^5.0.8"
+    "git-commit-msg-linter": "^5.0.8",
+    "module-alias": "^2.3.4"
   },
   "devDependencies": {
     "@cap-js/cds-typer": "^0.38.0",
