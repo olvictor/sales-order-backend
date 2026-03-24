@@ -25,7 +25,7 @@
   "scripts": {
     "start": "cds-serve",
     "dev": "cds-tsx watch",
-    "outrocommando": "kapoakas"
+    "lint": "eslint ./srv"
   },
   "private": true
 }

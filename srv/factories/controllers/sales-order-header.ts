@@ -2,9 +2,8 @@ import { SalesOrderHeaderController } from 'srv/controllers/sales-order-header/p
 import { SalesOrderHeaderControllerImpl } from 'srv/controllers/sales-order-header/implemantation';
 import { salesOrderHeaderService } from '../services/sales-order-header';
 
-export const makeSalesOrderHeaderController = ():SalesOrderHeaderController =>{
+export const makeSalesOrderHeaderController = (): SalesOrderHeaderController => {
     return new SalesOrderHeaderControllerImpl(salesOrderHeaderService);
 };
-
 
 export const salesOrderHeaderController = makeSalesOrderHeaderController();

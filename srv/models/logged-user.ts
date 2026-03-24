@@ -1,34 +1,33 @@
 type LoggedUserProps = {
-    id:string,
-    roles: string [],
-    attributes: LoggedUserAttributeProps
-}
+    id: string;
+    roles: string[];
+    attributes: LoggedUserAttributeProps;
+};
 
 type LoggedUserAttributeProps = {
-    id: number,
-    groups: string []
-}
-
+    id: number;
+    groups: string[];
+};
 
 export class LoggedUserModel {
-    constructor(private props: LoggedUserProps){}
+    constructor(private props: LoggedUserProps) {}
 
     public static create(props: LoggedUserProps) {
-        return new LoggedUserModel(props);  
+        return new LoggedUserModel(props);
     }
 
-    public get id(){
+    public get id() {
         return this.props.id;
     }
 
-    public get roles(){
+    public get roles() {
         return this.props.roles;
     }
-    public get attributes(){
+    public get attributes() {
         return this.props.attributes;
     }
 
-    public toStringfiedObject(): string{
+    public toStringfiedObject(): string {
         return JSON.stringify(this.props);
     }
 }

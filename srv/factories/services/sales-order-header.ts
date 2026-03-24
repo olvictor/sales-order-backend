@@ -4,11 +4,11 @@ import { SalesOrderHeaderService } from 'srv/services/sales-order-header/protoco
 import { SalesOrderHeaderServiceImpl } from 'srv/services/sales-order-header/implementation';
 import { SalesOrderLogRepositoryImpl } from 'srv/repositories/sales-order-log/implementation';
 
-const makeSalesOrderHeaderService = (): SalesOrderHeaderService =>{
+const makeSalesOrderHeaderService = (): SalesOrderHeaderService => {
     const customerRepository = new CustomerRepositoryImpl();
     const productRepository = new ProductRepositoryImpl();
     const salesOrderLogsRepository = new SalesOrderLogRepositoryImpl();
-    
+
     return new SalesOrderHeaderServiceImpl(customerRepository, productRepository, salesOrderLogsRepository);
 };
 

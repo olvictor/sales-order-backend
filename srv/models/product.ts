@@ -1,41 +1,40 @@
 export type ProductProps = {
-        id : string;
-        name : string;
-        price : number;
-        stock : number;
-}
+    id: string;
+    name: string;
+    price: number;
+    stock: number;
+};
 
 export type SellValidationResult = {
-    hasError: boolean,
+    hasError: boolean;
     error?: Error;
-}
-
+};
 
 export class ProductModel {
-    constructor(private props: ProductProps){}
+    constructor(private props: ProductProps) {}
 
-    public static with(props: ProductProps){
+    public static with(props: ProductProps) {
         return new ProductModel(props);
     }
 
-    public get id(){
+    public get id() {
         return this.props.id;
     }
-    public get name(){
+    public get name() {
         return this.props.name;
     }
-    public get price(){
+    public get price() {
         return this.props.price;
     }
-    public get stock(){
+    public get stock() {
         return this.props.stock;
     }
 
-    public set stock(stock:number){
+    public set stock(stock: number) {
         this.props.stock = stock;
     }
-    public sell(amount:number): SellValidationResult{
-        if(this.stock < amount ){
+    public sell(amount: number): SellValidationResult {
+        if (this.stock < amount) {
             return {
                 hasError: true,
                 error: new Error('Quantidade insuficiente no stock.')
