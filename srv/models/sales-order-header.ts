@@ -1,3 +1,4 @@
+import { SalesOrderHeader } from "@models/sales";
 import { SalesOrderItemsModel } from "./sales-order-item";
 
 type salesOrderHeadersProps = {
@@ -7,7 +8,8 @@ type salesOrderHeadersProps = {
     items: SalesOrderItemsModel[];
 }
 
-type salesOrderHeadersPropsWhitoutTotalAmount = Omit<salesOrderHeadersProps,'id' | 'TotalAmount'>;
+type salesOrderHeadersPropsWhitoutIdAndTotalAmount = Omit<salesOrderHeadersProps,'id' | 'TotalAmount'>;
+
 
 
 type CreationPayload = {
@@ -23,12 +25,16 @@ export class SalesOrderHeadersModel {
 
     constructor(private props: salesOrderHeadersProps){}
 
-    public static create(props: salesOrderHeadersPropsWhitoutTotalAmount): SalesOrderHeadersModel{
+    public static create(props: salesOrderHeadersPropsWhitoutIdAndTotalAmount): SalesOrderHeadersModel{
         return new SalesOrderHeadersModel({
             ...props,
            id: crypto.randomUUID(),
            totalAmount: 0
     })
+    }
+
+    public static with(props: salesOrderHeadersProps): SalesOrderHeadersModel {
+        return new SalesOrderHeadersModel(props)
     }
 
     public get id(){
@@ -121,4 +127,8 @@ export class SalesOrderHeadersModel {
                quantity:item.quantity
         }))
     }
+
+     public toStringfiedObject(): string{
+        return JSON.stringify(this.props)
+     }     
 } 
