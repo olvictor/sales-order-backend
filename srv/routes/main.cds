@@ -10,4 +10,6 @@ service MainService {
     entity Products as projection on sales.Products;
 
     entity Customers as projection on sales.Customers;
+
+    entity SalesOrderStatuses as projection on sales.SalesOrderStatuses;
 }
