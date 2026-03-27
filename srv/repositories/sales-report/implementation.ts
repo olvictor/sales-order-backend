@@ -8,9 +8,10 @@ import { SalesReportRepository } from '@/repositories/sales-report/protocol';
 
 export class SalesReportRepositoryImpl implements SalesReportRepository {
     public async findByDays(days: number): Promise<SalesReportModel[] | null> {
+        console.log(days);
         const today = new Date().toISOString();
         const subtractedDays = new Date();
-        subtractedDays.setDate(subtractedDays.getDay() - days);
+        subtractedDays.setDate(subtractedDays.getDate() - days);
         const subtractedDaysISOString = subtractedDays.toISOString();
 
         const sql = SELECT.from('sales.SalesOrderHeaders')
@@ -29,6 +30,7 @@ export class SalesReportRepositoryImpl implements SalesReportRepository {
             });
 
         const salesReports = await cds.run(sql);
+        console.log(salesReports);
         if (salesReports.lenght === 0) {
             return null;
         }

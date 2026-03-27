@@ -73,7 +73,6 @@ export default (service: Service) => {
 
     service.on('getSalesReportByDays', async (request: Request) => {
         const days = request.data?.days || 7;
-        console.log(request.data?.days);
         return salesReportController.findByDays(days);
     });
 };
