@@ -1,6 +1,6 @@
 using { sales } from '../schema';
 
-namespace db.types.SalesReportByDays;
+namespace db.types.SalesReport;
 
 type ExpectedResult {
         salesOrderId: sales.SalesOrderHeaders:id;
