@@ -75,4 +75,10 @@ export default (service: Service) => {
         const days = request.data?.days || 7;
         return salesReportController.findByDays(days);
     });
+
+    service.on('getSalesReportByCustomerId', async (request: Request) => {
+        const [{ id: customer }] = request.params as unknown as { id: string }[];
+
+        return salesReportController.findByCustomerId(customer);
+    });
 };
