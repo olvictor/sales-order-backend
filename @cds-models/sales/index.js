@@ -6,12 +6,23 @@ module.exports.SalesOrderHeaders = createEntityProxy(['sales', 'SalesOrderHeader
 // SalesOrderItems
 module.exports.SalesOrderItem = createEntityProxy(['sales', 'SalesOrderItems'], { target: { is_singular: true } })
 module.exports.SalesOrderItems = createEntityProxy(['sales', 'SalesOrderItems'], { target: { is_singular: false }})
+// SalesOrderLogs
+module.exports.SalesOrderLog = createEntityProxy(['sales', 'SalesOrderLogs'], { target: { is_singular: true } })
+module.exports.SalesOrderLogs = createEntityProxy(['sales', 'SalesOrderLogs'], { target: { is_singular: false }})
+// SalesOrderStatuses
+module.exports.SalesOrderStatus = createEntityProxy(['sales', 'SalesOrderStatuses'], { target: { is_singular: true }, customProps: ["id"] })
+module.exports.SalesOrderStatuses = createEntityProxy(['sales', 'SalesOrderStatuses'], { target: { is_singular: false }})
 // Customers
 module.exports.Customer = createEntityProxy(['sales', 'Customers'], { target: { is_singular: true } })
 module.exports.Customers = createEntityProxy(['sales', 'Customers'], { target: { is_singular: false }})
 // Products
 module.exports.Product = createEntityProxy(['sales', 'Products'], { target: { is_singular: true } })
 module.exports.Products = createEntityProxy(['sales', 'Products'], { target: { is_singular: false }})
+// SalesOrderStatuses.texts
+module.exports.SalesOrderStatuses.text = createEntityProxy(['sales', 'SalesOrderStatuses.texts'], { target: { is_singular: true }, customProps: ["id"] })
+module.exports.SalesOrderStatuses.texts = createEntityProxy(['sales', 'SalesOrderStatuses.texts'], { target: { is_singular: false }})
 // events
 // actions
 // enums
+module.exports.SalesOrderStatus.id ??= { completed: "COMPLETED", pending: "PENDING", rejected: "REJECTED" }
+module.exports.SalesOrderStatuses.text.id ??= { completed: "COMPLETED", pending: "PENDING", rejected: "REJECTED" }

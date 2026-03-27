@@ -1,22 +1,35 @@
 // This is an automatically generated file. Please do not change its contents manually!
 import * as _ from './..';
 import * as __ from './../_';
+import * as _db_types_SalesReportByDays from './../db/types/SalesReportByDays';
+import * as _sap_common from './../sap/common';
 
 export default class {
+  declare static readonly getSalesReportByDays: typeof getSalesReportByDays;
 }
+
+// enum
+const SalesOrderStatus_id = {
+  completed: "COMPLETED",
+  pending: "PENDING",
+  rejected: "REJECTED",
+} as const;
+type SalesOrderStatus_id = "COMPLETED" | "PENDING" | "REJECTED"
 
 export function _SalesOrderHeaderAspect<TBase extends new (...args: any[]) => object>(Base: TBase) {
   return class SalesOrderHeader extends Base {
+    declare id?: __.Key<string>
+    declare totalAmount?: number | null
     declare createdAt?: __.CdsTimestamp | null
     /** Canonical user ID */
     declare createdBy?: _.User | null
     declare modifiedAt?: __.CdsTimestamp | null
     /** Canonical user ID */
     declare modifiedBy?: _.User | null
-    declare id?: __.Key<string>
     declare customer?: __.Association.to<Customer> | null
     declare customer_id?: string | null
-    declare totalAmount?: number | null
+    declare status?: __.Association.to<SalesOrderStatus> | null
+    declare status_id?: SalesOrderStatus_id | null
     declare items?: __.Composition.of.many<SalesOrderItems>
     static readonly kind: 'entity' | 'type' | 'aspect' = 'entity';
     declare static readonly keys: __.KeysOf<SalesOrderHeader>;
@@ -66,6 +79,25 @@ Object.defineProperty(Customer, 'is_singular', { value: true })
 export class Customers extends Array<Customer> {$count?: number}
 Object.defineProperty(Customers, 'name', { value: 'MainService.Customers' })
 
+export function _SalesOrderStatusAspect<TBase extends new (...args: any[]) => object>(Base: TBase) {
+  return class SalesOrderStatus extends Base {
+    declare id?: __.Key<SalesOrderStatus_id>
+    declare description?: string | null
+    declare texts?: __.Composition.of.many<SalesOrderStatuses.texts>
+    declare localized?: __.Association.to<SalesOrderStatuses.text> | null
+    static id = SalesOrderStatus_id;
+    static readonly kind: 'entity' | 'type' | 'aspect' = 'entity';
+    declare static readonly keys: __.KeysOf<SalesOrderStatus>;
+    declare static readonly elements: __.ElementsOf<SalesOrderStatus>;
+    declare static readonly actions: globalThis.Record<never, never>;
+  };
+}
+export class SalesOrderStatus extends _SalesOrderStatusAspect(__.Entity) {}
+Object.defineProperty(SalesOrderStatus, 'name', { value: 'MainService.SalesOrderStatuses' })
+Object.defineProperty(SalesOrderStatus, 'is_singular', { value: true })
+export class SalesOrderStatuses extends Array<SalesOrderStatus> {$count?: number}
+Object.defineProperty(SalesOrderStatuses, 'name', { value: 'MainService.SalesOrderStatuses' })
+
 export function _SalesOrderItemAspect<TBase extends new (...args: any[]) => object>(Base: TBase) {
   return class SalesOrderItem extends Base {
     declare id?: __.Key<string>
@@ -86,3 +118,43 @@ Object.defineProperty(SalesOrderItem, 'name', { value: 'MainService.SalesOrderIt
 Object.defineProperty(SalesOrderItem, 'is_singular', { value: true })
 export class SalesOrderItems extends Array<SalesOrderItem> {$count?: number}
 Object.defineProperty(SalesOrderItems, 'name', { value: 'MainService.SalesOrderItems' })
+
+
+export declare const getSalesReportByDays:  {
+  // positional
+  (days: __.DeepRequired<_db_types_SalesReportByDays.Params>['days'] | null): globalThis.Promise<Array<_db_types_SalesReportByDays.ExpectedResult>> | Array<_db_types_SalesReportByDays.ExpectedResult>
+  // named
+  ({days}: {days?: __.DeepRequired<_db_types_SalesReportByDays.Params>['days'] | null}): globalThis.Promise<Array<_db_types_SalesReportByDays.ExpectedResult>> | Array<_db_types_SalesReportByDays.ExpectedResult>
+  // metadata (do not use)
+  __parameters: {days?: __.DeepRequired<_db_types_SalesReportByDays.Params>['days'] | null}, __returns: globalThis.Promise<Array<_db_types_SalesReportByDays.ExpectedResult>> | Array<_db_types_SalesReportByDays.ExpectedResult>, __self: never
+  kind: 'function'
+}
+export namespace SalesOrderStatuses {
+  // enum
+  const text_id = {
+    completed: "COMPLETED",
+    pending: "PENDING",
+    rejected: "REJECTED",
+  } as const;
+  type text_id = "COMPLETED" | "PENDING" | "REJECTED"
+  
+  export function _textAspect<TBase extends new (...args: any[]) => object>(Base: TBase) {
+    return class text extends Base {
+      /** Type for a language code */
+      declare locale?: __.Key<_sap_common.Locale>
+      declare id?: __.Key<text_id>
+      declare description?: string | null
+      static id = text_id;
+      static readonly kind: 'entity' | 'type' | 'aspect' = 'entity';
+      declare static readonly keys: __.KeysOf<text>;
+      declare static readonly elements: __.ElementsOf<text>;
+      declare static readonly actions: globalThis.Record<never, never>;
+    };
+  }
+  export class text extends _textAspect(__.Entity) {}
+  Object.defineProperty(text, 'name', { value: 'MainService.SalesOrderStatuses.texts' })
+  Object.defineProperty(text, 'is_singular', { value: true })
+  export class texts extends Array<text> {$count?: number}
+  Object.defineProperty(texts, 'name', { value: 'MainService.SalesOrderStatuses.texts' })
+  
+}

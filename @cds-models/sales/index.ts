@@ -1,18 +1,35 @@
 // This is an automatically generated file. Please do not change its contents manually!
 import * as _ from './..';
 import * as __ from './../_';
+import * as _sap_common from './../sap/common';
+
+// enum
+const SalesOrderStatus_id = {
+  completed: "COMPLETED",
+  pending: "PENDING",
+  rejected: "REJECTED",
+} as const;
+type SalesOrderStatus_id = "COMPLETED" | "PENDING" | "REJECTED"
 
 export function _SalesOrderHeaderAspect<TBase extends new (...args: any[]) => object>(Base: TBase) {
-  return class SalesOrderHeader extends _._managedAspect(Base) {
+  return class SalesOrderHeader extends Base {
     declare id?: __.Key<string>
+    declare totalAmount?: number | null
+    declare createdAt?: __.CdsTimestamp | null
+    /** Canonical user ID */
+    declare createdBy?: _.User | null
+    declare modifiedAt?: __.CdsTimestamp | null
+    /** Canonical user ID */
+    declare modifiedBy?: _.User | null
     declare customer?: __.Association.to<Customer> | null
     declare customer_id?: string | null
-    declare totalAmount?: number | null
+    declare status?: __.Association.to<SalesOrderStatus> | null
+    declare status_id?: SalesOrderStatus_id | null
     declare items?: __.Composition.of.many<SalesOrderItems>
-    static override readonly kind: 'entity' | 'type' | 'aspect' = 'entity';
+    static readonly kind: 'entity' | 'type' | 'aspect' = 'entity';
     declare static readonly keys: __.KeysOf<SalesOrderHeader>;
     declare static readonly elements: __.ElementsOf<SalesOrderHeader>;
-    declare static readonly actions: typeof _.managed.actions & globalThis.Record<never, never>;
+    declare static readonly actions: globalThis.Record<never, never>;
   };
 }
 export class SalesOrderHeader extends _SalesOrderHeaderAspect(__.Entity) {}
@@ -41,6 +58,44 @@ Object.defineProperty(SalesOrderItem, 'name', { value: 'sales.SalesOrderItems' }
 Object.defineProperty(SalesOrderItem, 'is_singular', { value: true })
 export class SalesOrderItems extends Array<SalesOrderItem> {$count?: number}
 Object.defineProperty(SalesOrderItems, 'name', { value: 'sales.SalesOrderItems' })
+
+export function _SalesOrderLogAspect<TBase extends new (...args: any[]) => object>(Base: TBase) {
+  return class SalesOrderLog extends _._managedAspect(Base) {
+    declare id?: __.Key<string>
+    declare header?: __.Association.to<SalesOrderHeader> | null
+    declare header_id?: string | null
+    declare userData?: string | null
+    declare orderData?: string | null
+    static override readonly kind: 'entity' | 'type' | 'aspect' = 'entity';
+    declare static readonly keys: __.KeysOf<SalesOrderLog>;
+    declare static readonly elements: __.ElementsOf<SalesOrderLog>;
+    declare static readonly actions: typeof _.managed.actions & globalThis.Record<never, never>;
+  };
+}
+export class SalesOrderLog extends _SalesOrderLogAspect(__.Entity) {}
+Object.defineProperty(SalesOrderLog, 'name', { value: 'sales.SalesOrderLogs' })
+Object.defineProperty(SalesOrderLog, 'is_singular', { value: true })
+export class SalesOrderLogs extends Array<SalesOrderLog> {$count?: number}
+Object.defineProperty(SalesOrderLogs, 'name', { value: 'sales.SalesOrderLogs' })
+
+export function _SalesOrderStatusAspect<TBase extends new (...args: any[]) => object>(Base: TBase) {
+  return class SalesOrderStatus extends Base {
+    declare id?: __.Key<SalesOrderStatus_id>
+    declare description?: string | null
+    declare texts?: __.Composition.of.many<SalesOrderStatuses.texts>
+    declare localized?: __.Association.to<SalesOrderStatuses.text> | null
+    static id = SalesOrderStatus_id;
+    static readonly kind: 'entity' | 'type' | 'aspect' = 'entity';
+    declare static readonly keys: __.KeysOf<SalesOrderStatus>;
+    declare static readonly elements: __.ElementsOf<SalesOrderStatus>;
+    declare static readonly actions: globalThis.Record<never, never>;
+  };
+}
+export class SalesOrderStatus extends _SalesOrderStatusAspect(__.Entity) {}
+Object.defineProperty(SalesOrderStatus, 'name', { value: 'sales.SalesOrderStatuses' })
+Object.defineProperty(SalesOrderStatus, 'is_singular', { value: true })
+export class SalesOrderStatuses extends Array<SalesOrderStatus> {$count?: number}
+Object.defineProperty(SalesOrderStatuses, 'name', { value: 'sales.SalesOrderStatuses' })
 
 export function _CustomerAspect<TBase extends new (...args: any[]) => object>(Base: TBase) {
   return class Customer extends Base {
@@ -77,3 +132,31 @@ Object.defineProperty(Product, 'name', { value: 'sales.Products' })
 Object.defineProperty(Product, 'is_singular', { value: true })
 export class Products extends Array<Product> {$count?: number}
 Object.defineProperty(Products, 'name', { value: 'sales.Products' })
+
+export namespace SalesOrderStatuses {
+  // enum
+  const text_id = {
+    completed: "COMPLETED",
+    pending: "PENDING",
+    rejected: "REJECTED",
+  } as const;
+  type text_id = "COMPLETED" | "PENDING" | "REJECTED"
+  
+  export function _textAspect<TBase extends new (...args: any[]) => object>(Base: TBase) {
+    return class text extends _sap_common._TextsAspectAspect(Base) {
+      declare id?: __.Key<text_id>
+      declare description?: string | null
+      static id = text_id;
+      static override readonly kind: 'entity' | 'type' | 'aspect' = 'entity';
+      declare static readonly keys: __.KeysOf<text> & typeof _sap_common.TextsAspect.keys;
+      declare static readonly elements: __.ElementsOf<text>;
+      declare static readonly actions: typeof _sap_common.TextsAspect.actions & globalThis.Record<never, never>;
+    };
+  }
+  export class text extends _textAspect(__.Entity) {}
+  Object.defineProperty(text, 'name', { value: 'sales.SalesOrderStatuses.texts' })
+  Object.defineProperty(text, 'is_singular', { value: true })
+  export class texts extends Array<text> {$count?: number}
+  Object.defineProperty(texts, 'name', { value: 'sales.SalesOrderStatuses.texts' })
+  
+}

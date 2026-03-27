@@ -1,13 +1,13 @@
 /* eslint-disable max-lines-per-function */
-import { CustomerModel } from 'srv/models/custumer';
-import { CustomerRepository } from 'srv/repositories/customer/protocols';
-import { LoggedUserModel } from 'srv/models/logged-user';
-import { ProductModel } from 'srv/models/product';
+import { CustomerModel } from '@/models/custumer';
+import { CustomerRepository } from '@/repositories/customer/protocols';
+import { LoggedUserModel } from '@/models/logged-user';
+import { ProductModel } from '@/models/product';
 import { ProductRepository } from '../../repositories/product/protocol';
 import { SalesOrderHeadersModel } from '../../models/sales-order-header';
 import { SalesOrderItemsModel } from '../../models/sales-order-item';
-import { SalesOrderLogModel } from 'srv/models/sales-order-log';
-import { SalesOrderLogRepository } from 'srv/repositories/sales-order-log/protocol';
+import { SalesOrderLogModel } from '@/models/sales-order-log';
+import { SalesOrderLogRepository } from '@/repositories/sales-order-log/protocol';
 import { User } from '@sap/cds';
 import { CreationPayloadValidationResult, SalesOrderHeaderService } from './protocol';
 import { SalesOrderHeader, SalesOrderHeaders, SalesOrderItem } from '@models/sales';

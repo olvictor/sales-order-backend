@@ -1,11 +1,16 @@
-/* eslint-disable max-lines-per-function */
 import '../configs/module-alias';
+/* eslint-disable max-lines-per-function */
 
 import { SalesOrderHeaders } from '@models/sales';
-import { customerController } from '../factories/controllers/customer';
-import { salesOrderHeaderController } from '../factories/controllers/sales-order-header';
+import { customerController } from '@/factories/controllers/customer';
+import { salesOrderHeaderController } from '@/factories/controllers/sales-order-header';
 import { Customers, Product, Products, SalesOrderItems } from '@models/sales';
+
+import { salesReportController } from '@/factories/controllers/sales-report';
+
 import cds, { Request, Service } from '@sap/cds';
+
+// import { SalesReportRepositoryImpl } from '../repositories/sales-report/implementation';
 
 export default (service: Service) => {
     service.before('READ', '*', (request: Request) => {
@@ -64,5 +69,11 @@ export default (service: Service) => {
             ];
             await cds.create('sales.SalesOrderLogs').entries(log);
         }
+    });
+
+    service.on('getSalesReportByDays', async (request: Request) => {
+        const days = request.data?.days || 7;
+        console.log(request.data?.days);
+        return salesReportController.findByDays(days);
     });
 };

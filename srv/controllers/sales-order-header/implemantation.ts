@@ -1,4 +1,4 @@
-import { SalesOrderHeaderService } from 'srv/services/sales-order-header/protocol';
+import { SalesOrderHeaderService } from '@/services/sales-order-header/protocol';
 import { User } from '@sap/cds';
 import { CreationPayloadValidationResult, SalesOrderHeaderController } from './protocols';
 import { SalesOrderHeader, SalesOrderHeaders } from '@models/sales';

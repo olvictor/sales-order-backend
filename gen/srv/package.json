@@ -4,21 +4,31 @@
   "dependencies": {
     "@sap/cds": "^9",
     "axios": "^1.13.6",
-    "git-commit-msg-linter": "^5.0.8"
+    "git-commit-msg-linter": "^5.0.8",
+    "module-alias": "^2.3.4"
   },
   "devDependencies": {
     "@cap-js/cds-typer": "^0.38.0",
     "@cap-js/cds-types": "^0.16.0",
     "@cap-js/sqlite": "^2",
+    "@eslint/js": "^10.0.1",
     "@types/axios": "^0.14.4",
+    "@types/chai": "^5.2.3",
     "@types/node": "^25.5.0",
+    "chai": "^6.2.2",
+    "eslint": "^10.1.0",
+    "eslint-plugin-prettier": "^5.5.5",
+    "globals": "^17.4.0",
+    "jiti": "^2.6.1",
+    "prettier": "^3.8.1",
     "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.57.2"
   },
   "scripts": {
     "start": "cds-serve",
     "dev": "cds-tsx watch",
-    "outrocommando": "kapoakas"
+    "lint": "eslint ./srv"
   },
   "private": true,
   "engines": {

@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Capabilities.V1.xml">
+    <edmx:Include Alias="Capabilities" Namespace="Org.OData.Capabilities.V1"/>
+  </edmx:Reference>
   <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
     <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
   </edmx:Reference>
   <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
     <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
   </edmx:Reference>
+  <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/HTML5.xml">
+    <edmx:Include Alias="HTML5" Namespace="com.sap.vocabularies.HTML5.v1"/>
+  </edmx:Reference>
   <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
     <edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Validation.V1.xml">
+    <edmx:Include Alias="Validation" Namespace="Org.OData.Validation.V1"/>
   </edmx:Reference>
   <edmx:DataServices>
     <Schema Namespace="MainService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
@@ -22,29 +31,40 @@
       <EntityContainer Name="EntityContainer">
         <EntitySet Name="SalesOrderHeaders" EntityType="MainService.SalesOrderHeaders">
           <NavigationPropertyBinding Path="customer" Target="Customers"/>
+          <NavigationPropertyBinding Path="status" Target="SalesOrderStatuses"/>
           <NavigationPropertyBinding Path="items" Target="SalesOrderItems"/>
         </EntitySet>
         <EntitySet Name="Products" EntityType="MainService.Products"/>
         <EntitySet Name="Customers" EntityType="MainService.Customers"/>
+        <EntitySet Name="SalesOrderStatuses" EntityType="MainService.SalesOrderStatuses">
+          <NavigationPropertyBinding Path="texts" Target="SalesOrderStatuses_texts"/>
+          <NavigationPropertyBinding Path="localized" Target="SalesOrderStatuses_texts"/>
+        </EntitySet>
         <EntitySet Name="SalesOrderItems" EntityType="MainService.SalesOrderItems">
           <NavigationPropertyBinding Path="header" Target="SalesOrderHeaders"/>
           <NavigationPropertyBinding Path="product" Target="Products"/>
         </EntitySet>
+        <EntitySet Name="SalesOrderStatuses_texts" EntityType="MainService.SalesOrderStatuses_texts"/>
+        <FunctionImport Name="getSalesReportByDays" Function="MainService.getSalesReportByDays"/>
       </EntityContainer>
       <EntityType Name="SalesOrderHeaders">
         <Key>
           <PropertyRef Name="id"/>
         </Key>
+        <Property Name="id" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="totalAmount" Type="Edm.Decimal" Precision="15" Scale="2"/>
         <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
         <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
         <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
         <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
-        <Property Name="id" Type="Edm.Guid" Nullable="false"/>
         <NavigationProperty Name="customer" Type="MainService.Customers">
           <ReferentialConstraint Property="customer_id" ReferencedProperty="id"/>
         </NavigationProperty>
         <Property Name="customer_id" Type="Edm.Guid"/>
-        <Property Name="totalAmount" Type="Edm.Decimal" Precision="15" Scale="2"/>
+        <NavigationProperty Name="status" Type="MainService.SalesOrderStatuses">
+          <ReferentialConstraint Property="status_id" ReferencedProperty="id"/>
+        </NavigationProperty>
+        <Property Name="status_id" Type="Edm.String"/>
         <NavigationProperty Name="items" Type="Collection(MainService.SalesOrderItems)" Partner="header">
           <OnDelete Action="Cascade"/>
         </NavigationProperty>
@@ -67,6 +87,19 @@
         <Property Name="lastName" Type="Edm.String" MaxLength="100"/>
         <Property Name="email" Type="Edm.String" MaxLength="255"/>
       </EntityType>
+      <EntityType Name="SalesOrderStatuses">
+        <Key>
+          <PropertyRef Name="id"/>
+        </Key>
+        <Property Name="id" Type="Edm.String" Nullable="false"/>
+        <Property Name="description" Type="Edm.String"/>
+        <NavigationProperty Name="texts" Type="Collection(MainService.SalesOrderStatuses_texts)">
+          <OnDelete Action="Cascade"/>
+        </NavigationProperty>
+        <NavigationProperty Name="localized" Type="MainService.SalesOrderStatuses_texts">
+          <ReferentialConstraint Property="id" ReferencedProperty="id"/>
+        </NavigationProperty>
+      </EntityType>
       <EntityType Name="SalesOrderItems">
         <Key>
           <PropertyRef Name="id"/>
@@ -83,45 +116,435 @@
         <Property Name="quantity" Type="Edm.Int32"/>
         <Property Name="price" Type="Edm.Decimal" Precision="15" Scale="2"/>
       </EntityType>
-      <Annotations Target="MainService.SalesOrderHeaders/createdAt">
-        <Annotation Term="UI.HiddenFilter" Bool="true"/>
-        <Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
-        <Annotation Term="Core.Immutable" Bool="true"/>
-        <Annotation Term="Core.Computed" Bool="true"/>
-        <Annotation Term="Common.Label" String="{i18n>CreatedAt}"/>
+      <EntityType Name="SalesOrderStatuses_texts">
+        <Key>
+          <PropertyRef Name="locale"/>
+          <PropertyRef Name="id"/>
+        </Key>
+        <Property Name="locale" Type="Edm.String" MaxLength="14" Nullable="false"/>
+        <Property Name="id" Type="Edm.String" Nullable="false"/>
+        <Property Name="description" Type="Edm.String"/>
+      </EntityType>
+      <ComplexType Name="db_types_SalesReportByDays_ExpectedResult">
+        <Property Name="salesOrderId" Type="Edm.Guid"/>
+        <Property Name="salesOrderTotalAmount" Type="Edm.Decimal" Precision="15" Scale="2"/>
+        <Property Name="customerId" Type="Edm.Guid"/>
+        <Property Name="customerFullName" Type="Edm.String" MaxLength="120"/>
+      </ComplexType>
+      <Function Name="getSalesReportByDays" IsBound="false" IsComposable="false">
+        <Parameter Name="days" Type="Edm.Int32"/>
+        <ReturnType Type="Collection(MainService.db_types_SalesReportByDays_ExpectedResult)" Nullable="true"/>
+      </Function>
+      <Annotations Target="MainService.SalesOrderHeaders">
+        <Annotation Term="UI.SelectionFields">
+          <Collection>
+            <PropertyPath>id</PropertyPath>
+            <PropertyPath>totalAmount</PropertyPath>
+            <PropertyPath>customer_id</PropertyPath>
+            <PropertyPath>status_id</PropertyPath>
+            <PropertyPath>createdAt</PropertyPath>
+            <PropertyPath>modifiedAt</PropertyPath>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.LineItem">
+          <Collection>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="$type" String="UI.DataField"/>
+              <PropertyValue Property="Value" Path="id"/>
+              <Annotation Term="HTML5.CssDefaults">
+                <Record Type="HTML5.CssDefaultsType">
+                  <PropertyValue Property="width" String="18rem"/>
+                </Record>
+              </Annotation>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="$type" String="UI.DataField"/>
+              <PropertyValue Property="Value" Path="customer/id"/>
+              <PropertyValue Property="Label" String="Customer_ID"/>
+              <Annotation Term="HTML5.CssDefaults">
+                <Record Type="HTML5.CssDefaultsType">
+                  <PropertyValue Property="width" String="18rem"/>
+                </Record>
+              </Annotation>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="$type" String="UI.DataField"/>
+              <PropertyValue Property="Value" Path="status/description"/>
+              <PropertyValue Property="Criticality">
+                <If>
+                  <Eq>
+                    <Path>status_id</Path>
+                    <String>COMPLETED</String>
+                  </Eq>
+                  <Int>3</Int>
+                  <If>
+                    <Eq>
+                      <Path>status_id</Path>
+                      <String>PENDING</String>
+                    </Eq>
+                    <Int>2</Int>
+                    <Int>1</Int>
+                  </If>
+                </If>
+              </PropertyValue>
+              <PropertyValue Property="CriticalityRepresentation" EnumMember="UI.CriticalityRepresentationType/WithoutIcon"/>
+              <PropertyValue Property="Label" String="Status"/>
+              <Annotation Term="HTML5.CssDefaults">
+                <Record Type="HTML5.CssDefaultsType">
+                  <PropertyValue Property="width" String="10rem"/>
+                </Record>
+              </Annotation>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="$type" String="UI.DataField"/>
+              <PropertyValue Property="Value" Path="totalAmount"/>
+              <Annotation Term="HTML5.CssDefaults">
+                <Record Type="HTML5.CssDefaultsType">
+                  <PropertyValue Property="width" String="10rem"/>
+                </Record>
+              </Annotation>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="$type" String="UI.DataField"/>
+              <PropertyValue Property="Value" Path="createdAt"/>
+              <Annotation Term="HTML5.CssDefaults">
+                <Record Type="HTML5.CssDefaultsType">
+                  <PropertyValue Property="width" String="10rem"/>
+                </Record>
+              </Annotation>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="$type" String="UI.DataField"/>
+              <PropertyValue Property="Value" Path="createdBy"/>
+              <Annotation Term="HTML5.CssDefaults">
+                <Record Type="HTML5.CssDefaultsType">
+                  <PropertyValue Property="width" String="10rem"/>
+                </Record>
+              </Annotation>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.HeaderInfo">
+          <Record Type="UI.HeaderInfoType">
+            <PropertyValue Property="TypeName" String="Pedido"/>
+            <PropertyValue Property="TypeNamePlural" String="Pedidos"/>
+            <PropertyValue Property="Title">
+              <Record Type="UI.DataField">
+                <PropertyValue Property="Value" String="Pedido: {id}"/>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.Facets">
+          <Collection>
+            <Record Type="UI.CollectionFacet">
+              <PropertyValue Property="ID" String="salesOrderData"/>
+              <PropertyValue Property="Label" String="Informações do Cabeçalho do pedido"/>
+              <PropertyValue Property="Facets">
+                <Collection>
+                  <Record Type="UI.ReferenceFacet">
+                    <PropertyValue Property="ID" String="header"/>
+                    <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Header"/>
+                  </Record>
+                </Collection>
+              </PropertyValue>
+            </Record>
+            <Record Type="UI.ReferenceFacet">
+              <PropertyValue Property="ID" String="customerData"/>
+              <PropertyValue Property="Label" String="Informações do Cliente"/>
+              <PropertyValue Property="Target" AnnotationPath="customer/@UI.FieldGroup#CustomerData"/>
+            </Record>
+            <Record Type="UI.ReferenceFacet">
+              <PropertyValue Property="ID" String="itemsData"/>
+              <PropertyValue Property="Label" String="Items do Pedido"/>
+              <PropertyValue Property="Target" AnnotationPath="items/@UI.LineItem"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.FieldGroup" Qualifier="Header">
+          <Record Type="UI.FieldGroupType">
+            <PropertyValue Property="Data">
+              <Collection>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Label" String="ID"/>
+                  <PropertyValue Property="Value" Path="id"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="totalAmount"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="createdAt"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="createdBy"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
       </Annotations>
-      <Annotations Target="MainService.SalesOrderHeaders/createdBy">
-        <Annotation Term="UI.HiddenFilter" Bool="true"/>
-        <Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
-        <Annotation Term="Core.Immutable" Bool="true"/>
-        <Annotation Term="Core.Computed" Bool="true"/>
-        <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
-        <Annotation Term="Common.Label" String="{i18n>CreatedBy}"/>
-      </Annotations>
-      <Annotations Target="MainService.SalesOrderHeaders/modifiedAt">
-        <Annotation Term="UI.HiddenFilter" Bool="true"/>
-        <Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
-        <Annotation Term="Core.Computed" Bool="true"/>
-        <Annotation Term="Common.Label" String="{i18n>ChangedAt}"/>
-      </Annotations>
-      <Annotations Target="MainService.SalesOrderHeaders/modifiedBy">
-        <Annotation Term="UI.HiddenFilter" Bool="true"/>
-        <Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
-        <Annotation Term="Core.Computed" Bool="true"/>
-        <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
-        <Annotation Term="Common.Label" String="{i18n>ChangedBy}"/>
+      <Annotations Target="MainService.EntityContainer/SalesOrderHeaders">
+        <Annotation Term="Capabilities.DeleteRestrictions">
+          <Record Type="Capabilities.DeleteRestrictionsType">
+            <PropertyValue Property="Deletable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.FilterFunctions">
+          <Collection>
+            <String>tolower</String>
+          </Collection>
+        </Annotation>
+        <Annotation Term="Capabilities.FilterRestrictions">
+          <Record Type="Capabilities.FilterRestrictionsType">
+            <PropertyValue Property="FilterExpressionRestrictions">
+              <Collection>
+                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                  <PropertyValue Property="Property" PropertyPath="createdAt"/>
+                  <PropertyValue Property="AllowedExpressions" String="SingleRange"/>
+                </Record>
+                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                  <PropertyValue Property="Property" PropertyPath="modifiedAt"/>
+                  <PropertyValue Property="AllowedExpressions" String="SingleRange"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
       </Annotations>
       <Annotations Target="MainService.SalesOrderHeaders/id">
+        <Annotation Term="Common.Label" String="ID"/>
         <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
+      </Annotations>
+      <Annotations Target="MainService.SalesOrderHeaders/totalAmount">
+        <Annotation Term="Common.Label" String="Valor Total"/>
+      </Annotations>
+      <Annotations Target="MainService.SalesOrderHeaders/createdAt">
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Common.Label" String="Data de Criacao"/>
+      </Annotations>
+      <Annotations Target="MainService.SalesOrderHeaders/createdBy">
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+        <Annotation Term="Common.Label" String="Criado Por"/>
+      </Annotations>
+      <Annotations Target="MainService.SalesOrderHeaders/modifiedAt">
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Common.Label" String="Data de Atualização"/>
+      </Annotations>
+      <Annotations Target="MainService.SalesOrderHeaders/modifiedBy">
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+        <Annotation Term="Common.Label" String="{i18n>UserID}"/>
+      </Annotations>
+      <Annotations Target="MainService.SalesOrderHeaders/customer">
+        <Annotation Term="Common.Title" String="Cliente"/>
+        <Annotation Term="Common.Label" String="Cliente"/>
+      </Annotations>
+      <Annotations Target="MainService.SalesOrderHeaders/customer_id">
+        <Annotation Term="Common.Title" String="Cliente"/>
+        <Annotation Term="Common.Text" Path="customer/firstName"/>
+        <Annotation Term="Common.ValueList">
+          <Record Type="Common.ValueListType">
+            <PropertyValue Property="CollectionPath" String="Customers"/>
+            <PropertyValue Property="Parameters">
+              <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                  <PropertyValue Property="ValueListProperty" String="id"/>
+                  <PropertyValue Property="LocalDataProperty" PropertyPath="customer_id"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                  <PropertyValue Property="ValueListProperty" String="firstName"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                  <PropertyValue Property="ValueListProperty" String="lastName"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                  <PropertyValue Property="ValueListProperty" String="email"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="Common.Label" String="Cliente"/>
+      </Annotations>
+      <Annotations Target="MainService.SalesOrderHeaders/status">
+        <Annotation Term="Common.Label" String="Status"/>
+      </Annotations>
+      <Annotations Target="MainService.SalesOrderHeaders/status_id">
+        <Annotation Term="Common.Label" String="Status"/>
+        <Annotation Term="Common.Text" Path="status/description">
+          <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly"/>
+        </Annotation>
+        <Annotation Term="Common.ValueListWithFixedValues" Bool="true"/>
+        <Annotation Term="Common.ValueList">
+          <Record Type="Common.ValueListType">
+            <PropertyValue Property="CollectionPath" String="SalesOrderStatuses"/>
+            <PropertyValue Property="Parameters">
+              <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                  <PropertyValue Property="ValueListProperty" String="id"/>
+                  <PropertyValue Property="LocalDataProperty" PropertyPath="status_id"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
       </Annotations>
       <Annotations Target="MainService.Products/id">
         <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
       </Annotations>
+      <Annotations Target="MainService.Products/name">
+        <Annotation Term="Common.Label" String="Produto"/>
+      </Annotations>
+      <Annotations Target="MainService.Customers">
+        <Annotation Term="UI.FieldGroup" Qualifier="CustomerData">
+          <Record Type="UI.FieldGroupType">
+            <PropertyValue Property="Data">
+              <Collection>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="id"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="firstName"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="lastName"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="email"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+      </Annotations>
       <Annotations Target="MainService.Customers/id">
+        <Annotation Term="Common.Label" String="ID"/>
         <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
       </Annotations>
+      <Annotations Target="MainService.Customers/firstName">
+        <Annotation Term="Common.Label" String="Nome"/>
+      </Annotations>
+      <Annotations Target="MainService.Customers/lastName">
+        <Annotation Term="Common.Label" String="Sobrenome"/>
+      </Annotations>
+      <Annotations Target="MainService.Customers/email">
+        <Annotation Term="Common.Label" String="Email"/>
+      </Annotations>
+      <Annotations Target="MainService.SalesOrderStatuses/id">
+        <Annotation Term="Common.Text" Path="description">
+          <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly"/>
+        </Annotation>
+        <Annotation Term="Validation.AllowedValues">
+          <Collection>
+            <Record Type="Validation.AllowedValue">
+              <Annotation Term="Core.SymbolicName" String="completed"/>
+              <PropertyValue Property="Value" String="COMPLETED"/>
+            </Record>
+            <Record Type="Validation.AllowedValue">
+              <Annotation Term="Core.SymbolicName" String="pending"/>
+              <PropertyValue Property="Value" String="PENDING"/>
+            </Record>
+            <Record Type="Validation.AllowedValue">
+              <Annotation Term="Core.SymbolicName" String="rejected"/>
+              <PropertyValue Property="Value" String="REJECTED"/>
+            </Record>
+          </Collection>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="MainService.getSalesReportByDays(Edm.Int32)/days">
+        <Annotation Term="Core.OptionalParameter">
+          <Record Type="Core.OptionalParameterType"/>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="MainService.SalesOrderItems">
+        <Annotation Term="UI.LineItem">
+          <Collection>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="$type" Path="UI/DataField"/>
+              <PropertyValue Property="Value" Path="id"/>
+              <Annotation Term="HTML5.CssDefaults">
+                <Record Type="HTML5.CssDefaultsType">
+                  <PropertyValue Property="width" String="18rem"/>
+                </Record>
+              </Annotation>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="$type" Path="UI/DataField"/>
+              <PropertyValue Property="Value" Path="price"/>
+              <Annotation Term="HTML5.CssDefaults">
+                <Record Type="HTML5.CssDefaultsType">
+                  <PropertyValue Property="width" String="15rem"/>
+                </Record>
+              </Annotation>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="$type" Path="UI/DataField"/>
+              <PropertyValue Property="Value" Path="quantity"/>
+              <Annotation Term="HTML5.CssDefaults">
+                <Record Type="HTML5.CssDefaultsType">
+                  <PropertyValue Property="width" String="15rem"/>
+                </Record>
+              </Annotation>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="$type" Path="UI/DataField"/>
+              <PropertyValue Property="Value" Path="product/name"/>
+              <Annotation Term="HTML5.CssDefaults">
+                <Record Type="HTML5.CssDefaultsType">
+                  <PropertyValue Property="width" String="15rem"/>
+                </Record>
+              </Annotation>
+            </Record>
+          </Collection>
+        </Annotation>
+      </Annotations>
       <Annotations Target="MainService.SalesOrderItems/id">
+        <Annotation Term="Common.Label" String="ID"/>
         <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
+      </Annotations>
+      <Annotations Target="MainService.SalesOrderItems/header">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+      </Annotations>
+      <Annotations Target="MainService.SalesOrderItems/header_id">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+      </Annotations>
+      <Annotations Target="MainService.SalesOrderItems/product">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+      </Annotations>
+      <Annotations Target="MainService.SalesOrderItems/product_id">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+      </Annotations>
+      <Annotations Target="MainService.SalesOrderItems/quantity">
+        <Annotation Term="Common.Label" String="Quantidade"/>
+      </Annotations>
+      <Annotations Target="MainService.SalesOrderItems/price">
+        <Annotation Term="Common.Label" String="Preço"/>
+      </Annotations>
+      <Annotations Target="MainService.SalesOrderStatuses_texts/locale">
+        <Annotation Term="Common.Label" String="{i18n>LanguageCode}"/>
+      </Annotations>
+      <Annotations Target="MainService.SalesOrderStatuses_texts/id">
+        <Annotation Term="Validation.AllowedValues">
+          <Collection>
+            <Record Type="Validation.AllowedValue">
+              <Annotation Term="Core.SymbolicName" String="completed"/>
+              <PropertyValue Property="Value" String="COMPLETED"/>
+            </Record>
+            <Record Type="Validation.AllowedValue">
+              <Annotation Term="Core.SymbolicName" String="pending"/>
+              <PropertyValue Property="Value" String="PENDING"/>
+            </Record>
+            <Record Type="Validation.AllowedValue">
+              <Annotation Term="Core.SymbolicName" String="rejected"/>
+              <PropertyValue Property="Value" String="REJECTED"/>
+            </Record>
+          </Collection>
+        </Annotation>
       </Annotations>
     </Schema>
   </edmx:DataServices>
