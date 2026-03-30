@@ -4,6 +4,7 @@
 @product_id = c4ac411b-cf20-495e-a0b0-6d6e965fb4a3
 GET http://localhost:4004/odata/v4/main/SalesOrderHeaders
 Content-Type: application/json
+Authorization: Basic teste:123
 
 
 ###

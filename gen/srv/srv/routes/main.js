@@ -4,10 +4,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("../configs/module-alias");
-const customer_1 = require("../factories/controllers/customer");
-const sales_order_header_1 = require("../factories/controllers/sales-order-header");
+const customer_1 = require("@/factories/controllers/customer");
+const sales_order_header_1 = require("@/factories/controllers/sales-order-header");
+const sales_report_1 = require("@/factories/controllers/sales-report");
 const cds_1 = __importDefault(require("@sap/cds"));
-const implementation_1 = require("../repositories/sales-report/implementation");
+// import { SalesReportRepositoryImpl } from '../repositories/sales-report/implementation';
 exports.default = (service) => {
     service.before('READ', '*', (request) => {
         if (!request.user.is('read_only_user'))
@@ -55,17 +56,12 @@ exports.default = (service) => {
             await cds_1.default.create('sales.SalesOrderLogs').entries(log);
         }
     });
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     service.on('getSalesReportByDays', async (request) => {
-        const repository = new implementation_1.SalesReportRepositoryImpl();
-        const result = await repository.findByDays(1);
-        return [
-            {
-                salesOrderId: 'aaa',
-                salesOrderTotalAmount: 'bbbb',
-                costumerId: 'cccc',
-                costumerFullName: 'dddd'
-            }
-        ];
+        const days = request.data?.days || 7;
+        return sales_report_1.salesReportController.findByDays(days);
+    });
+    service.on('getSalesReportByCustomerId', async (request) => {
+        const [{ id: customer }] = request.params;
+        return sales_report_1.salesReportController.findByCustomerId(customer);
     });
 };

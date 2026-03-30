@@ -6,6 +6,7 @@
 
 GET http://{{url}}Products
 Content-Type: application/json
+Authorization: Basic teste:123
 
 
 ###

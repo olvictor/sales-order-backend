@@ -1,11 +1,13 @@
 // This is an automatically generated file. Please do not change its contents manually!
 import * as _ from './..';
 import * as __ from './../_';
-import * as _db_types_SalesReportByDays from './../db/types/SalesReportByDays';
+import * as _db_types_SalesReport from './../db/types/SalesReport';
+import * as _db_types_BulkCreateSalesOrder from './../db/types/BulkCreateSalesOrder';
 import * as _sap_common from './../sap/common';
 
 export default class {
   declare static readonly getSalesReportByDays: typeof getSalesReportByDays;
+  declare static readonly bulkCreateSalesOrders: typeof bulkCreateSalesOrders;
 }
 
 // enum
@@ -67,10 +69,21 @@ export function _CustomerAspect<TBase extends new (...args: any[]) => object>(Ba
     declare firstName?: string | null
     declare lastName?: string | null
     declare email?: string | null
+    declare salesOrders?: __.Association.to.many<SalesOrderHeaders>
     static readonly kind: 'entity' | 'type' | 'aspect' = 'entity';
     declare static readonly keys: __.KeysOf<Customer>;
     declare static readonly elements: __.ElementsOf<Customer>;
-    declare static readonly actions: globalThis.Record<never, never>;
+    declare static readonly actions: {
+      getSalesReportByCustomerId:  {
+        // positional
+        (): Array<_db_types_SalesReport.ExpectedResult>
+        // named
+        ({}: globalThis.Record<never, never>): Array<_db_types_SalesReport.ExpectedResult>
+        // metadata (do not use)
+        __parameters: globalThis.Record<never, never>, __returns: Array<_db_types_SalesReport.ExpectedResult>, __self: Customer
+        kind: 'function'
+      }
+    };
   };
 }
 export class Customer extends _CustomerAspect(__.Entity) {}
@@ -122,12 +135,22 @@ Object.defineProperty(SalesOrderItems, 'name', { value: 'MainService.SalesOrderI
 
 export declare const getSalesReportByDays:  {
   // positional
-  (days: __.DeepRequired<_db_types_SalesReportByDays.Params>['days'] | null): globalThis.Promise<Array<_db_types_SalesReportByDays.ExpectedResult>> | Array<_db_types_SalesReportByDays.ExpectedResult>
+  (days: __.DeepRequired<_db_types_SalesReport.Params>['days'] | null): globalThis.Promise<Array<_db_types_SalesReport.ExpectedResult>> | Array<_db_types_SalesReport.ExpectedResult>
   // named
-  ({days}: {days?: __.DeepRequired<_db_types_SalesReportByDays.Params>['days'] | null}): globalThis.Promise<Array<_db_types_SalesReportByDays.ExpectedResult>> | Array<_db_types_SalesReportByDays.ExpectedResult>
+  ({days}: {days?: __.DeepRequired<_db_types_SalesReport.Params>['days'] | null}): globalThis.Promise<Array<_db_types_SalesReport.ExpectedResult>> | Array<_db_types_SalesReport.ExpectedResult>
   // metadata (do not use)
-  __parameters: {days?: __.DeepRequired<_db_types_SalesReportByDays.Params>['days'] | null}, __returns: globalThis.Promise<Array<_db_types_SalesReportByDays.ExpectedResult>> | Array<_db_types_SalesReportByDays.ExpectedResult>, __self: never
+  __parameters: {days?: __.DeepRequired<_db_types_SalesReport.Params>['days'] | null}, __returns: globalThis.Promise<Array<_db_types_SalesReport.ExpectedResult>> | Array<_db_types_SalesReport.ExpectedResult>, __self: never
   kind: 'function'
+}
+
+export declare const bulkCreateSalesOrders:  {
+  // positional
+  (payload: Array<_db_types_BulkCreateSalesOrder.Payload>): globalThis.Promise<Array<_db_types_BulkCreateSalesOrder.ExpectedResult>> | Array<_db_types_BulkCreateSalesOrder.ExpectedResult>
+  // named
+  ({payload}: {payload?: Array<_db_types_BulkCreateSalesOrder.Payload>}): globalThis.Promise<Array<_db_types_BulkCreateSalesOrder.ExpectedResult>> | Array<_db_types_BulkCreateSalesOrder.ExpectedResult>
+  // metadata (do not use)
+  __parameters: {payload?: Array<_db_types_BulkCreateSalesOrder.Payload>}, __returns: globalThis.Promise<Array<_db_types_BulkCreateSalesOrder.ExpectedResult>> | Array<_db_types_BulkCreateSalesOrder.ExpectedResult>, __self: never
+  kind: 'action'
 }
 export namespace SalesOrderStatuses {
   // enum

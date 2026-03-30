@@ -6,10 +6,12 @@ const sales_order_header_1 = require("../../models/sales-order-header");
 const sales_order_item_1 = require("../../models/sales-order-item");
 const sales_order_log_1 = require("@/models/sales-order-log");
 class SalesOrderHeaderServiceImpl {
+    salesOrderHeaderRepository;
     customerRepository;
     productRepository;
     salesOrderLogRepository;
-    constructor(customerRepository, productRepository, salesOrderLogRepository) {
+    constructor(salesOrderHeaderRepository, customerRepository, productRepository, salesOrderLogRepository) {
+        this.salesOrderHeaderRepository = salesOrderHeaderRepository;
         this.customerRepository = customerRepository;
         this.productRepository = productRepository;
         this.salesOrderLogRepository = salesOrderLogRepository;
@@ -61,6 +63,40 @@ class SalesOrderHeaderServiceImpl {
             logs.push(log);
         }
         await this.salesOrderLogRepository.create(logs);
+    }
+    async bulkCreate(headers, loggedUser) {
+        const bulkCreateHeaders = [];
+        for (const headerObject of headers) {
+            const products = await this.getProductsById(headerObject);
+            if (!products) {
+                return {
+                    hasError: true,
+                    error: new Error('Nenhum produto da lista de items foi encontrado.')
+                };
+            }
+            const items = this.getSalesOrderItems(headerObject, products);
+            const header = this.getSalesOrderHeader(headerObject, items);
+            const customer = await this.getCustomerById(headerObject);
+            const headerValidationResult = header.validadeCreationPlayload({ customer_id: customer?.id });
+            if (!customer) {
+                return {
+                    hasError: true,
+                    error: new Error('Customer não encontrado')
+                };
+            }
+            if (headerValidationResult.hasError) {
+                return {
+                    hasError: true,
+                    error: new Error(headerValidationResult.error?.message)
+                };
+            }
+            bulkCreateHeaders.push(header);
+        }
+        await this.salesOrderHeaderRepository.bulkCreate(bulkCreateHeaders);
+        await this.afterCreate();
+        return {
+            hasError: false
+        };
     }
     async getProductsById(params) {
         const productsIds = params.items?.map((item) => item.product_id);

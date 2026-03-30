@@ -11,8 +11,14 @@ class SalesReportServiceImpl {
         if (!reportData) {
             return [];
         }
-        return [];
-        //return reportData?.map((r) => r.toObject());
+        return reportData?.map((r) => r.toObject());
+    }
+    async findByCustomerId(customerId) {
+        const reportData = await this.repository.findByCustomerId(customerId);
+        if (!reportData) {
+            return [];
+        }
+        return reportData?.map((r) => r.toObject());
     }
 }
 exports.SalesReportServiceImpl = SalesReportServiceImpl;

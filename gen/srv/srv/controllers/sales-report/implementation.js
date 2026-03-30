@@ -9,5 +9,8 @@ class SalesReportControllerImpl {
     async findByDays(days) {
         return this.service.findByDays(days);
     }
+    async findByCustomerId(customerId) {
+        return this.service.findByCustomerId(customerId);
+    }
 }
 exports.SalesReportControllerImpl = SalesReportControllerImpl;

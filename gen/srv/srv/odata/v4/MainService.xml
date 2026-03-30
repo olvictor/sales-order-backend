@@ -35,7 +35,9 @@
           <NavigationPropertyBinding Path="items" Target="SalesOrderItems"/>
         </EntitySet>
         <EntitySet Name="Products" EntityType="MainService.Products"/>
-        <EntitySet Name="Customers" EntityType="MainService.Customers"/>
+        <EntitySet Name="Customers" EntityType="MainService.Customers">
+          <NavigationPropertyBinding Path="salesOrders" Target="SalesOrderHeaders"/>
+        </EntitySet>
         <EntitySet Name="SalesOrderStatuses" EntityType="MainService.SalesOrderStatuses">
           <NavigationPropertyBinding Path="texts" Target="SalesOrderStatuses_texts"/>
           <NavigationPropertyBinding Path="localized" Target="SalesOrderStatuses_texts"/>
@@ -46,6 +48,7 @@
         </EntitySet>
         <EntitySet Name="SalesOrderStatuses_texts" EntityType="MainService.SalesOrderStatuses_texts"/>
         <FunctionImport Name="getSalesReportByDays" Function="MainService.getSalesReportByDays"/>
+        <ActionImport Name="bulkCreateSalesOrders" Action="MainService.bulkCreateSalesOrders"/>
       </EntityContainer>
       <EntityType Name="SalesOrderHeaders">
         <Key>
@@ -57,7 +60,7 @@
         <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
         <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
         <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
-        <NavigationProperty Name="customer" Type="MainService.Customers">
+        <NavigationProperty Name="customer" Type="MainService.Customers" Partner="salesOrders">
           <ReferentialConstraint Property="customer_id" ReferencedProperty="id"/>
         </NavigationProperty>
         <Property Name="customer_id" Type="Edm.Guid"/>
@@ -86,6 +89,7 @@
         <Property Name="firstName" Type="Edm.String" MaxLength="20"/>
         <Property Name="lastName" Type="Edm.String" MaxLength="100"/>
         <Property Name="email" Type="Edm.String" MaxLength="255"/>
+        <NavigationProperty Name="salesOrders" Type="Collection(MainService.SalesOrderHeaders)" Partner="customer"/>
       </EntityType>
       <EntityType Name="SalesOrderStatuses">
         <Key>
@@ -125,16 +129,40 @@
         <Property Name="id" Type="Edm.String" Nullable="false"/>
         <Property Name="description" Type="Edm.String"/>
       </EntityType>
-      <ComplexType Name="db_types_SalesReportByDays_ExpectedResult">
+      <ComplexType Name="db_types_SalesReport_ExpectedResult">
         <Property Name="salesOrderId" Type="Edm.Guid"/>
         <Property Name="salesOrderTotalAmount" Type="Edm.Decimal" Precision="15" Scale="2"/>
         <Property Name="customerId" Type="Edm.Guid"/>
         <Property Name="customerFullName" Type="Edm.String" MaxLength="120"/>
       </ComplexType>
+      <ComplexType Name="db_types_BulkCreateSalesOrder_ExpectedResult">
+        <Property Name="success" Type="Edm.Boolean"/>
+      </ComplexType>
+      <ComplexType Name="db_types_BulkCreateSalesOrder_Payload">
+        <Property Name="id" Type="Edm.Guid"/>
+        <Property Name="customer_id" Type="Edm.Guid"/>
+        <Property Name="totalAmount" Type="Edm.Decimal" Precision="15" Scale="2"/>
+        <Property Name="items" Type="Collection(MainService.db_types_BulkCreateSalesOrder_ItemsPayload)" Nullable="true"/>
+      </ComplexType>
+      <ComplexType Name="db_types_BulkCreateSalesOrder_ItemsPayload">
+        <Property Name="id" Type="Edm.Guid"/>
+        <Property Name="header_id" Type="Edm.Guid"/>
+        <Property Name="product_id" Type="Edm.Guid"/>
+        <Property Name="quantity" Type="Edm.Int32"/>
+        <Property Name="price" Type="Edm.Decimal" Precision="15" Scale="2"/>
+      </ComplexType>
+      <Function Name="getSalesReportByCustomerId" IsBound="true" IsComposable="false">
+        <Parameter Name="in" Type="MainService.Customers"/>
+        <ReturnType Type="Collection(MainService.db_types_SalesReport_ExpectedResult)" Nullable="true"/>
+      </Function>
       <Function Name="getSalesReportByDays" IsBound="false" IsComposable="false">
         <Parameter Name="days" Type="Edm.Int32"/>
-        <ReturnType Type="Collection(MainService.db_types_SalesReportByDays_ExpectedResult)" Nullable="true"/>
+        <ReturnType Type="Collection(MainService.db_types_SalesReport_ExpectedResult)" Nullable="true"/>
       </Function>
+      <Action Name="bulkCreateSalesOrders" IsBound="false">
+        <Parameter Name="payload" Type="Collection(MainService.db_types_BulkCreateSalesOrder_Payload)" Nullable="true"/>
+        <ReturnType Type="Collection(MainService.db_types_BulkCreateSalesOrder_ExpectedResult)" Nullable="true"/>
+      </Action>
       <Annotations Target="MainService.SalesOrderHeaders">
         <Annotation Term="UI.SelectionFields">
           <Collection>

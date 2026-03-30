@@ -103,6 +103,7 @@ export function _CustomerAspect<TBase extends new (...args: any[]) => object>(Ba
     declare firstName?: string | null
     declare lastName?: string | null
     declare email?: string | null
+    declare salesOrders?: __.Association.to.many<SalesOrderHeaders>
     static readonly kind: 'entity' | 'type' | 'aspect' = 'entity';
     declare static readonly keys: __.KeysOf<Customer>;
     declare static readonly elements: __.ElementsOf<Customer>;

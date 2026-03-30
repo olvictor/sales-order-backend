@@ -89,5 +89,13 @@ class SalesOrderHeadersModel {
     toStringfiedObject() {
         return JSON.stringify(this.props);
     }
+    toCreationObject() {
+        return {
+            id: this.props.id,
+            customer_id: this.props.customerId,
+            totalAmount: this.calculateTotalAmount(),
+            items: this.props.items
+        };
+    }
 }
 exports.SalesOrderHeadersModel = SalesOrderHeadersModel;

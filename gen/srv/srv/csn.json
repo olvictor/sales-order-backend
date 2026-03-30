@@ -309,6 +309,27 @@
         "email": {
           "type": "cds.String",
           "length": 255
+        },
+        "salesOrders": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "sales.SalesOrderHeaders",
+          "on": [
+            {
+              "ref": [
+                "salesOrders",
+                "customer"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
         }
       }
     },
@@ -1452,6 +1473,37 @@
           "@title": "Email",
           "type": "cds.String",
           "length": 255
+        },
+        "salesOrders": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "MainService.SalesOrderHeaders",
+          "on": [
+            {
+              "ref": [
+                "salesOrders",
+                "customer"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        }
+      },
+      "actions": {
+        "getSalesReportByCustomerId": {
+          "kind": "function",
+          "returns": {
+            "items": {
+              "type": "db.types.SalesReport.ExpectedResult"
+            }
+          }
         }
       }
     },
@@ -1551,7 +1603,7 @@
         "days": {
           "type": {
             "ref": [
-              "db.types.SalesReportByDays.Params",
+              "db.types.SalesReport.Params",
               "days"
             ]
           }
@@ -1559,11 +1611,26 @@
       },
       "returns": {
         "items": {
-          "type": "db.types.SalesReportByDays.ExpectedResult"
+          "type": "db.types.SalesReport.ExpectedResult"
         }
       }
     },
-    "db.types.SalesReportByDays.ExpectedResult": {
+    "MainService.bulkCreateSalesOrders": {
+      "kind": "action",
+      "params": {
+        "payload": {
+          "items": {
+            "type": "db.types.BulkCreateSalesOrder.Payload"
+          }
+        }
+      },
+      "returns": {
+        "items": {
+          "type": "db.types.BulkCreateSalesOrder.ExpectedResult"
+        }
+      }
+    },
+    "db.types.SalesReport.ExpectedResult": {
       "kind": "type",
       "elements": {
         "salesOrderId": {
@@ -1598,11 +1665,110 @@
         }
       }
     },
-    "db.types.SalesReportByDays.Params": {
+    "db.types.SalesReport.Params": {
       "kind": "type",
       "elements": {
         "days": {
           "type": "cds.Integer"
+        }
+      }
+    },
+    "db.types.BulkCreateSalesOrder.Payload": {
+      "kind": "type",
+      "elements": {
+        "id": {
+          "type": {
+            "ref": [
+              "sales.SalesOrderHeaders",
+              "id"
+            ]
+          }
+        },
+        "customer_id": {
+          "type": {
+            "ref": [
+              "sales.Customers",
+              "id"
+            ]
+          }
+        },
+        "totalAmount": {
+          "type": {
+            "ref": [
+              "sales.SalesOrderHeaders",
+              "totalAmount"
+            ]
+          },
+          "precision": 15,
+          "scale": 2
+        },
+        "items": {
+          "items": {
+            "type": "db.types.BulkCreateSalesOrder.ItemsPayload"
+          }
+        }
+      }
+    },
+    "db.types.BulkCreateSalesOrder.ItemsPayload": {
+      "kind": "type",
+      "elements": {
+        "id": {
+          "type": {
+            "ref": [
+              "sales.SalesOrderItems",
+              "id"
+            ]
+          }
+        },
+        "header_id": {
+          "type": {
+            "ref": [
+              "sales.SalesOrderHeaders",
+              "id"
+            ]
+          }
+        },
+        "product": {
+          "type": {
+            "ref": [
+              "sales.SalesOrderItems",
+              "product"
+            ]
+          },
+          "target": "sales.Products",
+          "keys": [
+            {
+              "ref": [
+                "id"
+              ]
+            }
+          ]
+        },
+        "quantity": {
+          "type": {
+            "ref": [
+              "sales.SalesOrderItems",
+              "quantity"
+            ]
+          }
+        },
+        "price": {
+          "type": {
+            "ref": [
+              "sales.SalesOrderItems",
+              "price"
+            ]
+          },
+          "precision": 15,
+          "scale": 2
+        }
+      }
+    },
+    "db.types.BulkCreateSalesOrder.ExpectedResult": {
+      "kind": "type",
+      "elements": {
+        "success": {
+          "type": "cds.Boolean"
         }
       }
     },
