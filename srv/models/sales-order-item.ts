@@ -15,10 +15,12 @@ type CreationPlayLoadValidation = {
 
 type SalesOrderItemsPropsWithoutId = Omit<SalesOrderItemsProps, 'id'>;
 
+export type SalesOrderItemsPropsWithSnakeCaseProductId = Omit<SalesOrderItemsProps, 'productId' | 'products'> & {
+    product_id: SalesOrderItemsProps['productId'];
+};
+
 type CreationPlayLoad = {
     product_id: SalesOrderItemsProps['productId'];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    items?: any[];
 };
 
 export class SalesOrderItemsModel {
@@ -60,6 +62,15 @@ export class SalesOrderItemsModel {
 
         return {
             hasError: false
+        };
+    }
+
+    public toCreationObject(): SalesOrderItemsPropsWithSnakeCaseProductId {
+        return {
+            id: this.props.id,
+            price: this.props.price,
+            quantity: this.props.quantity,
+            product_id: this.props.productId
         };
     }
 }
