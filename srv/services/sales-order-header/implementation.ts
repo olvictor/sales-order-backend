@@ -121,6 +121,32 @@ export class SalesOrderHeaderServiceImpl implements SalesOrderHeaderService {
         return this.serializeBulkCreateResult(bulkCreateHeaders);
     }
 
+    public async cloneSalesOrder(id: string, loggedUser: User): Promise<CreationPayloadValidationResult> {
+        const header = await this.salesOrderHeaderRepository.findCompleteSalesOrderById(id);
+
+        if (!header) {
+            return {
+                hasError: true,
+                error: new Error('Pedido não encontrado.')
+            };
+        }
+
+        const headerValidationResult = header.validadeCreationPlayload({
+            customer_id: header.customer_id
+        });
+
+        if (headerValidationResult.hasError) {
+            return {
+                hasError: true,
+                error: new Error(headerValidationResult.error?.message as string)
+            };
+        }
+
+        await this.salesOrderHeaderRepository.bulkCreate([header]);
+        await this.afterCreate([header.toCreationObject()], loggedUser);
+
+        return this.serializeBulkCreateResult([header]);
+    }
     private serializeBulkCreateResult(headers: SalesOrderHeadersModel[]): CreationPayloadValidationResult {
         return {
             hasError: false,
