@@ -22,6 +22,7 @@ type CreationPayloadValidationResult = {
     hasError: boolean;
     error?: Error;
 };
+
 export class SalesOrderHeadersModel {
     constructor(private props: salesOrderHeadersProps) {}
 
