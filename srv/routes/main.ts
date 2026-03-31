@@ -87,7 +87,7 @@ export default (service: Service) => {
         return salesOrderHeaderController.bulkCreate(data.payload, user);
     });
 
-    service.on('', async (request: Request) => {
+    service.on('cloneSalesOrder', async (request: Request) => {
         const [{ id }] = request.params as unknown as { id: string }[];
         const { user } = request;
 
