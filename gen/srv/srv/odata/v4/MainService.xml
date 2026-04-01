@@ -48,7 +48,7 @@
         </EntitySet>
         <EntitySet Name="SalesOrderStatuses_texts" EntityType="MainService.SalesOrderStatuses_texts"/>
         <FunctionImport Name="getSalesReportByDays" Function="MainService.getSalesReportByDays"/>
-        <ActionImport Name="bulkCreateSalesOrders" Action="MainService.bulkCreateSalesOrders"/>
+        <ActionImport Name="bulkCreateSalesOrder" Action="MainService.bulkCreateSalesOrder"/>
       </EntityContainer>
       <EntityType Name="SalesOrderHeaders">
         <Key>
@@ -151,6 +151,10 @@
         <Property Name="quantity" Type="Edm.Int32"/>
         <Property Name="price" Type="Edm.Decimal" Precision="15" Scale="2"/>
       </ComplexType>
+      <Action Name="cloneSalesOrder" IsBound="true">
+        <Parameter Name="in" Type="MainService.SalesOrderHeaders"/>
+        <ReturnType Type="Edm.Boolean"/>
+      </Action>
       <Function Name="getSalesReportByCustomerId" IsBound="true" IsComposable="false">
         <Parameter Name="in" Type="MainService.Customers"/>
         <ReturnType Type="Collection(MainService.db_types_SalesReport_ExpectedResult)" Nullable="true"/>
@@ -159,7 +163,7 @@
         <Parameter Name="days" Type="Edm.Int32"/>
         <ReturnType Type="Collection(MainService.db_types_SalesReport_ExpectedResult)" Nullable="true"/>
       </Function>
-      <Action Name="bulkCreateSalesOrders" IsBound="false">
+      <Action Name="bulkCreateSalesOrder" IsBound="false">
         <Parameter Name="payload" Type="Collection(MainService.db_types_BulkCreateSalesOrder_Payload)" Nullable="true"/>
         <ReturnType Type="Collection(MainService.db_types_BulkCreateSalesOrder_ExpectedResult)" Nullable="true"/>
       </Action>

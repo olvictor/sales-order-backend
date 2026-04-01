@@ -1,0 +1,7 @@
+COLUMN TABLE sales_Customers (
+  id NVARCHAR(36) NOT NULL,
+  firstName NVARCHAR(20),
+  lastName NVARCHAR(100),
+  email NVARCHAR(255),
+  PRIMARY KEY(id)
+)

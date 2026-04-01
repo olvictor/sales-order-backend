@@ -1,0 +1,6 @@
+VIEW MainService_Customers AS SELECT
+  Customers_0.id,
+  Customers_0.firstName,
+  Customers_0.lastName,
+  Customers_0.email
+FROM sales_Customers AS Customers_0

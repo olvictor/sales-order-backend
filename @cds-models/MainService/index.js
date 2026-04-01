@@ -25,7 +25,7 @@ module.exports.SalesOrderStatuses.texts = createEntityProxy(['MainService', 'Sal
 // events
 // actions
 module.exports.getSalesReportByDays = 'getSalesReportByDays'
-module.exports.bulkCreateSalesOrders = 'bulkCreateSalesOrders'
+module.exports.bulkCreateSalesOrder = 'bulkCreateSalesOrder'
 // enums
 module.exports.SalesOrderStatus.id ??= { completed: "COMPLETED", pending: "PENDING", rejected: "REJECTED" }
 module.exports.SalesOrderStatuses.text.id ??= { completed: "COMPLETED", pending: "PENDING", rejected: "REJECTED" }

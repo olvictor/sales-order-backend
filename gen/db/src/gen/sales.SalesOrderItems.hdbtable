@@ -1,0 +1,8 @@
+COLUMN TABLE sales_SalesOrderItems (
+  id NVARCHAR(36) NOT NULL,
+  header_id NVARCHAR(36),
+  product_id NVARCHAR(36),
+  quantity INTEGER,
+  price DECIMAL(15, 2),
+  PRIMARY KEY(id)
+)

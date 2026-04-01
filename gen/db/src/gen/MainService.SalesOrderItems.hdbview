@@ -1,0 +1,7 @@
+VIEW MainService_SalesOrderItems AS SELECT
+  SalesOrderItems_0.id,
+  SalesOrderItems_0.header_id,
+  SalesOrderItems_0.product_id,
+  SalesOrderItems_0.quantity,
+  SalesOrderItems_0.price
+FROM sales_SalesOrderItems AS SalesOrderItems_0

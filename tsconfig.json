@@ -4,7 +4,7 @@
     "target": "es2024",
     "module": "node16",
     "moduleResolution": "node16",
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "strict": true,
     "strictNullChecks": true,
     "esModuleInterop": true,

@@ -1024,7 +1024,8 @@
     "MainService": {
       "@source": "srv/routes/main.cds",
       "kind": "service",
-      "@requires": "authenticated-user"
+      "@requires": "authenticated-user",
+      "@path": "/sales-order"
     },
     "MainService.SalesOrderHeaders": {
       "kind": "entity",
@@ -1386,6 +1387,14 @@
             }
           ]
         }
+      },
+      "actions": {
+        "cloneSalesOrder": {
+          "kind": "action",
+          "returns": {
+            "type": "cds.Boolean"
+          }
+        }
       }
     },
     "MainService.Products": {
@@ -1615,7 +1624,7 @@
         }
       }
     },
-    "MainService.bulkCreateSalesOrders": {
+    "MainService.bulkCreateSalesOrder": {
       "kind": "action",
       "params": {
         "payload": {

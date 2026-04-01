@@ -1,0 +1,6 @@
+VIEW MainService_Products AS SELECT
+  Products_0.id,
+  Products_0.name,
+  Products_0.price,
+  Products_0.stock
+FROM sales_Products AS Products_0

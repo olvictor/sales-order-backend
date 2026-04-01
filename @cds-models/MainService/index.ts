@@ -7,7 +7,7 @@ import * as _sap_common from './../sap/common';
 
 export default class {
   declare static readonly getSalesReportByDays: typeof getSalesReportByDays;
-  declare static readonly bulkCreateSalesOrders: typeof bulkCreateSalesOrders;
+  declare static readonly bulkCreateSalesOrder: typeof bulkCreateSalesOrder;
 }
 
 // enum
@@ -36,7 +36,17 @@ export function _SalesOrderHeaderAspect<TBase extends new (...args: any[]) => ob
     static readonly kind: 'entity' | 'type' | 'aspect' = 'entity';
     declare static readonly keys: __.KeysOf<SalesOrderHeader>;
     declare static readonly elements: __.ElementsOf<SalesOrderHeader>;
-    declare static readonly actions: globalThis.Record<never, never>;
+    declare static readonly actions: {
+      cloneSalesOrder:  {
+        // positional
+        (): boolean
+        // named
+        ({}: globalThis.Record<never, never>): boolean
+        // metadata (do not use)
+        __parameters: globalThis.Record<never, never>, __returns: boolean, __self: SalesOrderHeader
+        kind: 'action'
+      }
+    };
   };
 }
 export class SalesOrderHeader extends _SalesOrderHeaderAspect(__.Entity) {}
@@ -143,7 +153,7 @@ export declare const getSalesReportByDays:  {
   kind: 'function'
 }
 
-export declare const bulkCreateSalesOrders:  {
+export declare const bulkCreateSalesOrder:  {
   // positional
   (payload: Array<_db_types_BulkCreateSalesOrder.Payload>): globalThis.Promise<Array<_db_types_BulkCreateSalesOrder.ExpectedResult>> | Array<_db_types_BulkCreateSalesOrder.ExpectedResult>
   // named
